@@ -1,16 +1,31 @@
-# This is a sample Python script.
+# linear regression practice
+from sklearn.datasets import fetch_california_housing
+import numpy as np
+from model import predict, compute_cost
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+housing = fetch_california_housing()
+#
+# X = housing.data
+# y = housing.target
 
+# print the shape of the data
+# print(X.shape, y.shape)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+#print the first 5 row of the data
+# print(X[:5])
+# print(y[:5])
 
+X = np.array(
+    [[1,2,3],
+    [3,4,5]]
+)
+y = np.array([1.0,3.0])
+theta = np.array([0.1, 0.2, 0.3])
+pred = predict(X, theta)
+print(pred)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+print(f" m, n = {X.shape}: X.shape")
+print(f" theta shape = {theta.shape}")
+print(f" pred shape = {pred.shape}")
+print(f"The cost function is {compute_cost(X, y, theta)}")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
