@@ -1,0 +1,19 @@
+Shuffle → makes your data fair
+Seed → makes your results consistent
+
+Purpose: to measure whether your model generalizes to unseen data.
+
+Train set teaches theta (model learns here).
+Test set is held out and only used after training to evaluate real performance.
+Without a test set, a low error could just mean the model fit the training data well, not that it will work on new houses.
+
+If you split before shuffling, train/test might come from different parts of an ordered dataset.
+Then train and test distributions can differ, giving unreliable learning/evaluation.
+
+(axis= 0) compute down the rows -> per column
+Spread = how far the values are from the average (mean)
+
+big spread → large numbers → big gradients
+small spread → small numbers → small gradients
+
+hstack = horizontal stack
