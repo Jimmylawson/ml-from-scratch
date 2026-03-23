@@ -9,20 +9,17 @@ def compute_cost(X, y, theta):
     cost_function =  (1 /(2 * m)) * np.sum(err ** 2)
 
     return cost_function
-def mse(y,y_pred):
-    return np.mean((y- y_pred) ** 2)
 
 def error(predict_values, y):
     return predict_values - y
+
+
 
 def compute_gradient(X, y, theta):
     m = len(y)
     err = error(predict(X, theta), y)
     gradient = (1 / m ) * X.T @ err
     return gradient
-
-def normal_equation(X, y):
-    return np.linalg.solve(X.T @ X, X.T @ y)
 
 def fit_gradient_descent(X, y, theta, alpha, num_iters, log_every=None):
     """
@@ -56,3 +53,18 @@ def fit_gradient_descent(X, y, theta, alpha, num_iters, log_every=None):
         # Set theta to updated values for next iteration
         theta = update_theta
     return theta, cost_history
+
+#the derivate approach to find the optimal theta value in one step
+#using the normal equation
+def normal_equation(X, y):
+    return np.linalg.solve(X.T @ X, X.T @ y)
+
+#methods for evaluation the model to check its performance
+def mse(y,y_pred):
+    return np.mean((y- y_pred) ** 2)
+def rmse(mse_value):
+    return np.sqrt(mse_value)
+def r2(y_train, y_pred):
+    sse = np.sum((y_train - y_pred) ** 2)
+    sst = np.sum((y_train - np.mean(y_train)) ** 2)
+    return 1 - (sse / sst)
