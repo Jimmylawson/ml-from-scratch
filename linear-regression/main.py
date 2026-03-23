@@ -1,8 +1,8 @@
 # linear regression practice
-from scipy.constants import sigma
 from sklearn.datasets import fetch_california_housing
 import numpy as np
-from model import predict, compute_cost, compute_gradient, fit_gradient_descent,mse
+from model import (predict, compute_cost, compute_gradient, fit_gradient_descent,mse,
+                   error, normal_equation)
 
 
 # dummy data
@@ -118,5 +118,41 @@ test_rmse = np.sqrt(test_mse)
 print(f"RMSE on train: {train_rmse:.6f}")
 print(f"RMSE on test: {test_rmse:.6f}")
 
+#next is R2 is see how it works
+train_sse = np.sum(error(y_train, y_train_pred) ** 2)
+train_sst = np.sum(error(y_train, np.mean(y_train)) ** 2)
+train_r2 = 1 - (train_sse / train_sst)
 
+test_sse = np.sum(error(y_test, y_test_pred) ** 2)
+test_sst = np.sum(error(y_test, np.mean(y_test)) ** 2)
+test_r2 = 1 - (test_sse / test_sst)
+print(f"R2 on train: {train_r2:.6f}")
+print(f"R2 on test: {test_r2:.6f}")
+
+#normal equation
+print("------ NORMAL EQUATION -----")
+theta_ne = normal_equation(X_train, y_train)
+y_train_ne = predict(X_train, theta_ne)
+y_test_ne = predict(X_test, theta_ne)
+
+train_mse_ne = mse(y_train, y_train_ne)
+test_mse_ne = mse(y_test, y_test_ne)
+print(f"MSE on train (normal equation): {train_mse_ne:.6f}")
+print(f"MSE on test (normal equation): {test_mse_ne:.6f}")
+
+train_rmse_ne = np.sqrt(train_mse_ne)
+test_rmse_ne = np.sqrt(test_mse_ne)
+print(f"RMSE on train (normal equation): {train_rmse_ne:.6f}")
+print(f"RMSE on test (normal equation): {test_rmse_ne:.6f}")
+
+train_sse_ne = np.sum((y_train - y_train_ne) ** 2)
+train_sst_ne = np.sum((y_train - y_train.mean()) ** 2)
+train_r2_ne = 1 - (train_sse_ne / train_sst_ne)
+
+test_sse_ne = np.sum((y_test - y_test_ne) ** 2)
+test_sst_ne = np.sum((y_test - y_test.mean()) ** 2)
+test_r2_ne = 1 - (test_sse_ne / test_sst_ne)
+
+print(f"R2 on train (normal equation): {train_r2_ne:.6f}")
+print(f"R2 on test (normal equation): {test_r2_ne:.6f}")
 

@@ -21,6 +21,9 @@ def compute_gradient(X, y, theta):
     gradient = (1 / m ) * X.T @ err
     return gradient
 
+def normal_equation(X, y):
+    return np.linalg.solve(X.T @ X, X.T @ y)
+
 def fit_gradient_descent(X, y, theta, alpha, num_iters, log_every=None):
     """
     Batch Gradient Descent to find optimal theta values

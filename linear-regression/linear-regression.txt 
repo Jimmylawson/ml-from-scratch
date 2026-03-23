@@ -107,3 +107,16 @@ The output of the RMSE makes it that:
 Great. This is a solid baseline.
 Train/Test are almost identical -> strong generalization.
 RMSE around 0.73 is reasonable for plain linear regression on this dataset.
+
+Yes, roughly.
+
+R^2 ≈ 0.60 means:
+
+About 60% of variation in house prices (around their mean) is captured by your linear model.
+About 40% remains unexplained by this model.
+That unexplained part can include:
+noise in data,
+missing features,
+nonlinear relationships (linear model can’t capture them),
+measurement errors.
+So it’s not “bad”; it means linear regression is a useful but limited approximation.
