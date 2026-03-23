@@ -1,4 +1,5 @@
 Shuffle → makes your data fair
+X needs scaling because features have different magnitudes and that breaks gradient descent. with scaling cost function = nice circle.
 Seed → makes your results consistent
 
 Purpose: to measure whether your model generalizes to unseen data.
@@ -10,10 +11,99 @@ Without a test set, a low error could just mean the model fit the training data 
 If you split before shuffling, train/test might come from different parts of an ordered dataset.
 Then train and test distributions can differ, giving unreliable learning/evaluation.
 
-(axis= 0) compute down the rows -> per column
+(axis= 0) compute down the rows -> per column. meaning you want the mean and std for each feature across the samples
 Spread = how far the values are from the average (mean)
+m
 
 big spread → large numbers → big gradients
 small spread → small numbers → small gradients
 
 hstack = horizontal stack
+Usually after standardization the mean will be 0  for each feature and the standard deviation will be 1 for each feature
+
+Here's a summary to add to your notes about what we covered:
+
+Shuffling, Mean & Standard Deviation
+Shuffling
+Purpose: Makes data fair and prevents bias
+Seed: Makes results reproducible (same random order every time)
+Method: rng.permutation(X.shape[0]) creates shuffled indices
+Important: Apply same indices to both X and y to keep (feature, target) pairs together
+Mean & Standard Deviation
+Mean: Average value of each feature across all samples
+Standard Deviation: How spread out values are from the mean
+axis=0: Compute down rows → per column (per feature statistics)
+Why We Need Standardization
+Different feature scales: Income (~0-15), Population (~3-35682), Age (~1-52)
+Gradient descent problems:
+Large features → huge gradients
+Small features → tiny gradients
+Unbalanced optimization
+Solution: Standardize all features to mean=0, std=1
+Formula: (X - mean) / std
+Critical Rule
+Calculate mean/std from TRAIN data only
+Apply same statistics to both train and test
+Never use test data statistics - this would be "data leakage"
+Results
+After standardization: All features have mean≈0, std=1
+Benefits: Balanced gradients, faster convergence, consistent learning rate
+
+np.hstack([np.ones((X_train.shape[0], 1)), X_train]) adds a bias column to your data.
+
+
+
+Breaking it down:
+
+np.ones((X_train.shape[0], 1)): Creates a column of ones
+X_train.shape[0] = 16512 (number of samples)
+So it creates: [[1], [1], [1], ..., [1]] (16512 rows, 1 column)
+X_train: Your standardized features (16512 rows, 8 columns)
+np.hstack([A, B]): Horizontal stack - joins arrays side by side
+example:
+Before: X_train.shape = (16512, 8)
+After:  X_train.shape = (16512, 9)
+
+New structure:
+[[1, feature1, feature2, ..., feature8],  # Sample 1
+ [1, feature1, feature2, ..., feature8],  # Sample 2
+ ...
+ [1, feature1, feature2, ..., feature8]]  # Sample 16512
+
+ Yes, exactly! The bias column provides the intercept term.
+
+How it works:
+
+Bias column: [1, 1, 1, ..., 1] (all ones)
+This gets multiplied by θ₀ (theta_0) in the linear regression formula
+Formula: y = θ₀*1 + θ₁*x₁ + θ₂*x₂ + ... + θ₈*x₈
+What this means:
+
+θ₀ is the intercept (where the line crosses the y-axis when all features = 0)
+The bias column of ones ensures θ₀ is always included in the prediction
+Without bias: y = θ₁*x₁ + θ₂*x₂ + ... (must pass through origin)
+With bias: y = θ₀ + θ₁*x₁ + θ₂*x₂ + ... (can shift up/down)
+
+num_iters controls how many times gradient descent updates theta.
+
+Why you need num_iters:
+Gradual improvement: Each iteration makes theta slightly better
+Convergence: Need multiple steps to reach the optimal minimum
+Stopping point: Otherwise gradient descent would run forever
+
+What convergence means:
+
+Found optimal theta: Further iterations won't improve much
+Model learned: Parameters are at the best possible values
+Ready to use: Can now make predictions on test data
+If not converged:
+Cost still decreasing significantly
+Might need more iterations
+Or adjust learning rate
+
+
+The output of the RMSE makes it that:
+
+Great. This is a solid baseline.
+Train/Test are almost identical -> strong generalization.
+RMSE around 0.73 is reasonable for plain linear regression on this dataset.
