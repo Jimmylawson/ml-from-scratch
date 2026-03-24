@@ -13,11 +13,13 @@ def sigmoid(X, theta):
 def logistic_cost_function(X,theta,y):
     y_hat = sigmoid(X,theta)
     m = len(y)
-    cost =  - (1/ m) *  (np.sum(y * np.log(y_hat)) + (1 - y) * np.log( 1 - y_hat))
-
+    epsilon = 1e-15
+    y_hat = np.clip(y_hat, epsilon, 1 - epsilon) #help to print the log from infinite to a small number
+    cost =  - (1/ m) * np.sum(
+        y * np.log(y_hat) + (1 - y) * np.log( 1 - y_hat))
     return cost
 
-def gradient_descent(X,y, theta):
+def logistic_gradient(X,y, theta):
     m = len(y)
     error = sigmoid(X, theta) - y
     gradient = (1/m )  * X.T @ error
@@ -28,7 +30,7 @@ def fit_gradient_descent(X, y, theta, num_iters, alpha):
     cost_history = []
 
     for i in range(num_iters):
-        grad = gradient_descent(X,y, theta)
+        grad = logistic_gradient(X, y, theta)
         theta = theta - alpha * grad
 
         cost_function = logistic_cost_function(X, theta, y)
@@ -43,3 +45,8 @@ def pred_prob(X, theta):
 def predict_class(X, theta):
     prob = pred_prob(X, theta)
     return (prob >= 0.5).astype(int)
+
+#accuracy is super import to evaluate your model
+def accuracy(X, y, theta):
+    preds = predict_class(X, theta)
+    return np.mean(preds == y)
