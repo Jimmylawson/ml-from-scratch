@@ -46,42 +46,42 @@ num_iters = 2000
 theta, cost_history = fit_gradient_descent(X_train, Y_train, theta,num_iters, alpha)
 
 
-# print(f"First cost: {cost_history[0]}")      # Should be high
-# print(f"Last cost: {cost_history[-1]}")      # Should be low
-# print(f"Cost improvement: {cost_history[0] - cost_history[-1]}")
+print(f"First cost: {cost_history[0]}")      # Should be high
+print(f"Last cost: {cost_history[-1]}")      # Should be low
+print(f"Cost improvement: {cost_history[0] - cost_history[-1]}")
 
 
 #accuracy
 train_acc = accuracy(X_train,Y_train,theta)
 test_acc = accuracy(X_test,Y_test,theta)
 
-#print(f"Train accuracy: {train_acc}") # this  i got 98# training accuracy
-#print(f"Test accuracy: {test_acc}") # this i got 100% training accuracy
+print(f"Train accuracy: {train_acc}") # this  i got 98# training accuracy
+print(f"Test accuracy: {test_acc}") # this i got 100% training accuracy
 
 #probability
-# train_prob = pred_prob(X_train,theta)
-# test_prob = pred_prob(X_test,theta)
-# print(f"Train probability: {train_prob[-1]}")
-# print(f"Test probability: {test_prob[-1]}")
+train_prob = pred_prob(X_train,theta)
+test_prob = pred_prob(X_test,theta)
+print(f"Train probability: {train_prob[-1]}")
+print(f"Test probability: {test_prob[-1]}")
 
 #print confusion matrix which tells us how our classifier performs
-# print("Confusion matrix:")
-# for t in [0.3,0.5,0.7]:
-#     print(f"Threshold: {t}\n")
-#     y_pred_test = predict_class(X_test,theta,t) #gives your model's prediction (0 or 1)
-#     tp = np.sum((y_pred_test == 1) & (Y_test == 1))  # True Positive: model predicted 1 and actual = 1
-#     tn = np.sum((y_pred_test == 0) & (Y_test == 0))  # True Negative: model predicted  0 and actual 0
-#     fp = np.sum((y_pred_test == 1) & (Y_test == 0))  # False positive: Model predicted 1 but actual = 0
-#     fn = np.sum((y_pred_test == 0) & (Y_test == 1))  # False negative: Model predicted 0 but actual = 1
-#     # let you know how many correct predictions
-#     # how many mistakes
-#     # what type of mistakes
-#     print(f"TN={tn}, FP={fp}")
-#     print(f"FN={fn}, TP={tp}")
-#     # classification metrics
-#     print(f"Precision: {precision(tp, fp)}")
-#     print(f"Recall: {recall(tp, fn)}")
-#     print(f"F1 Score: {f1_score(tp, fp, fn)}\n")
+print("Confusion matrix:")
+for t in [0.3,0.5,0.7]:
+    print(f"Threshold: {t}\n")
+    y_pred_test = predict_class(X_test,theta,t) #gives your model's prediction (0 or 1)
+    tp = np.sum((y_pred_test == 1) & (Y_test == 1))  # True Positive: model predicted 1 and actual = 1
+    tn = np.sum((y_pred_test == 0) & (Y_test == 0))  # True Negative: model predicted  0 and actual 0
+    fp = np.sum((y_pred_test == 1) & (Y_test == 0))  # False positive: Model predicted 1 but actual = 0
+    fn = np.sum((y_pred_test == 0) & (Y_test == 1))  # False negative: Model predicted 0 but actual = 1
+    # let you know how many correct predictions
+    # how many mistakes
+    # what type of mistakes
+    print(f"TN={tn}, FP={fp}")
+    print(f"FN={fn}, TP={tp}")
+    # classification metrics
+    print(f"Precision: {precision(tp, fp)}")
+    print(f"Recall: {recall(tp, fn)}")
+    print(f"F1 Score: {f1_score(tp, fp, fn)}\n")
 
 
 
@@ -94,3 +94,33 @@ plt.grid(True)
 plt.savefig("logistic_gd_convergence.png")
 plt.show()
 #Convergence is  where theta stop changing significantly
+
+#Learning curve plot (cost vs training examples)
+train_errs, test_errs, sizes = [], [], []
+for frac in [0.1, 0.2, 0.4, 0.6, 0.8, 1.0]:
+    k = int(frac * X_train.shape[0])
+    X_sub, y_sub = X_train[:k], Y_train[:k]
+
+    theta0 = np.zeros(X_train.shape[1])
+    theta_k, _ = fit_gradient_descent(X_sub, y_sub, theta0, num_iters, alpha)
+
+    train_acc_k = accuracy(X_sub, y_sub, theta_k)
+    test_acc_k = accuracy(X_test, Y_test, theta_k)
+
+    train_errs.append(1 - train_acc_k)
+    test_errs.append(1 - test_acc_k)
+    sizes.append(k)
+
+
+plt.figure(figsize=(8, 5))
+plt.plot(sizes, train_errs, marker="o", label="Train Error")
+plt.plot(sizes, test_errs, marker="o", label="Test Error")
+
+plt.xlabel("Training Set Size")
+plt.ylabel("Classification Error (1 - Accuracy)")
+plt.title("Logistic Learning Curve")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+plt.savefig("logistic_learning_curve.png")
