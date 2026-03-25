@@ -180,3 +180,4 @@ plt.show() #Display the plot
 # print(f"R2 on test (normal equation): {test_r2_ne:.6f}")
 
 #showing the convergence of the gradient descent and N
+#

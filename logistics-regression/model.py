@@ -42,11 +42,24 @@ def pred_prob(X, theta):
     return sigmoid(X, theta)
 
 #predict_class convert probably to class label( 0 or 1 )
-def predict_class(X, theta):
+def predict_class(X, theta,threshold=0.5):
     prob = pred_prob(X, theta)
-    return (prob >= 0.5).astype(int)
+    return (prob >= threshold).astype(int)
 
 #accuracy is super import to evaluate your model
 def accuracy(X, y, theta):
     preds = predict_class(X, theta)
     return np.mean(preds == y)
+
+# --- Classification Metrics ---
+def precision(TP, FP):
+    return TP / (TP + FP) if(TP + FP) > 0 else 0.0
+
+def recall(TP, FN):
+    return TP / (TP + FN) if(TP + FN) > 0 else 0.0
+
+def f1_score(TP, FP, FN):
+    p = precision(TP, FP)
+    r = recall(TP, FN)
+
+    return 2 * (p * r) / (p + r)

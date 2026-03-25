@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.datasets import load_breast_cancer
-from model import (fit_gradient_descent,accuracy,pred_prob,predict_class)
+from model import (fit_gradient_descent,accuracy,pred_prob,predict_class,precision,recall,f1_score)
+import matplotlib.pyplot as plt
 cancer  = load_breast_cancer()
 
 X, Y = cancer.data, cancer.target
@@ -63,14 +64,33 @@ test_acc = accuracy(X_test,Y_test,theta)
 # print(f"Train probability: {train_prob[-1]}")
 # print(f"Test probability: {test_prob[-1]}")
 
-#print confusion matrix
-print("Confusion matrix:")
-y_pred_test = predict_class(X_test,theta)
+#print confusion matrix which tells us how our classifier performs
+# print("Confusion matrix:")
+# for t in [0.3,0.5,0.7]:
+#     print(f"Threshold: {t}\n")
+#     y_pred_test = predict_class(X_test,theta,t) #gives your model's prediction (0 or 1)
+#     tp = np.sum((y_pred_test == 1) & (Y_test == 1))  # True Positive: model predicted 1 and actual = 1
+#     tn = np.sum((y_pred_test == 0) & (Y_test == 0))  # True Negative: model predicted  0 and actual 0
+#     fp = np.sum((y_pred_test == 1) & (Y_test == 0))  # False positive: Model predicted 1 but actual = 0
+#     fn = np.sum((y_pred_test == 0) & (Y_test == 1))  # False negative: Model predicted 0 but actual = 1
+#     # let you know how many correct predictions
+#     # how many mistakes
+#     # what type of mistakes
+#     print(f"TN={tn}, FP={fp}")
+#     print(f"FN={fn}, TP={tp}")
+#     # classification metrics
+#     print(f"Precision: {precision(tp, fp)}")
+#     print(f"Recall: {recall(tp, fn)}")
+#     print(f"F1 Score: {f1_score(tp, fp, fn)}\n")
 
-tp = np.sum((y_pred_test == 1) & (Y_test == 1))
-tn = np.sum((y_pred_test == 0) & (Y_test == 0))
-fp = np.sum((y_pred_test == 1) & (Y_test == 0))
-fn = np.sum((y_pred_test == 0) & (Y_test == 1))
 
-print(f"TN={tn}, FP={fp}")
-print(f"FN={fn}, TP={tp}")
+
+#Convergence plot(cost vs iterations)
+plt.plot(range(len(cost_history)), cost_history)
+plt.xlabel("Iterations")
+plt.ylabel("Logistic Cost")
+plt.title("Logistic GD Convergence")
+plt.grid(True)
+plt.savefig("logistic_gd_convergence.png")
+plt.show()
+#Convergence is  where theta stop changing significantly
