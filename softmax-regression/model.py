@@ -38,10 +38,33 @@ def softmax_gradient(X,y, theta):
     m = len(y)
     probs  = softmax(X, theta)
     K = theta.shape[1]
-    y_onehot = np.eye(K)[y] # (m,k) # eye creats an identity matrix
+    y_onehot = np.eye(K)[y]  # (m, K)
+    # create identity matrix (K x K), where each row represents a class
+    # use y as indices to select rows → converts labels into one-hot vectors
+
     error = probs - y_onehot #(m, k)
     gradient = (1/m) * ( X.T @ error) #(n,k)
     return gradient
 
+def fit_softmax_gd(X,y,theta, alpha, num_iters,log_every=None):
+    cost_history = []
+    for i in range(num_iters):
+        gradient = softmax_gradient(X,y,theta)
+        theta = theta - alpha * gradient
+        cost = cross_entropy_loss(X, y, theta)
+        cost_history.append(cost)
+
+        #log_every controls how often to print training progress.
+        if log_every is not None and (i % log_every == 0 or i == num_iters - 1):
+            print(f"iter {i:4d} | loss {cost:.6f}")
+
+    return theta, cost_history
 
 
+def predict_class(X,theta):
+    probs = softmax(X,theta)
+    return np.argmax(probs, axis=1)
+
+def accuracy(X,y, theta):
+    preds = predict_class(X,theta)
+    return np.mean(preds == y)
