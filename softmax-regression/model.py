@@ -55,8 +55,8 @@ def fit_softmax_gd(X,y,theta, alpha, num_iters,log_every=None):
         cost_history.append(cost)
 
         #log_every controls how often to print training progress.
-        if log_every is not None and (i % log_every == 0 or i == num_iters - 1):
-            print(f"iter {i:4d} | loss {cost:.6f}")
+        # if log_every is not None and (i % log_every == 0 or i == num_iters - 1):
+        #     print(f"iter {i:4d} | loss {cost:.6f}")
 
     return theta, cost_history
 
