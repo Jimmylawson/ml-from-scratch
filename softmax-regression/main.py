@@ -1,5 +1,6 @@
 from sklearn.datasets import load_digits
 import numpy as np
+from model import (fit_softmax_gd, predict_class, softmax,softmax_gradient,accuracy)
 
 data = load_digits()
 
@@ -22,8 +23,8 @@ y_train,y_test = Y[:m_train],Y[m_train:]
 mu = X_train.mean(axis=0)
 sigma = X_train.std(axis=0)
 sigma[sigma== 0] = 1 # help us not to divide by zero
-print(f"Original means: {mu}", mu)
-print(f"Original stds: {sigma}", sigma)
+# print(f"Original means: {mu}", mu)
+# print(f"Original stds: {sigma}", sigma)
 X_train = (X_train  - mu) / sigma
 X_test = (X_test - mu) / sigma
 
@@ -31,3 +32,19 @@ X_test = (X_test - mu) / sigma
 #add bias column to the training and the test
 X_train = np.hstack([np.ones((X_train.shape[0], 1)),X_train])
 X_test  = np.hstack([np.ones((X_test.shape[0], 1)),X_test])
+
+alpha = 0.01
+num_iters = 20000
+log_every = 1000
+num_classes = len(np.unique(y_train))
+theta = np.zeros((X_train.shape[1],num_classes))
+
+#fit gradient descent
+theta, cost_history = fit_softmax_gd(X_train, y_train, theta, alpha, num_iters, log_every)
+
+#evaluate
+train_accuracy = accuracy(X_train, y_train, theta)
+test_accuracy = accuracy(X_test, y_test, theta)
+
+print(f"Train accuracy: {train_accuracy:.4f}")
+print(f"Test accuracy: {test_accuracy:.4f}")
