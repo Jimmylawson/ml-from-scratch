@@ -69,6 +69,14 @@ Why:
 Equivalent one-hot form:
 `-(1/m) * sum_i sum_k y(i,k) log p(i,k)`
 
+Meaning of this indexing line in code:
+`correct_class_probs = probs[np.arange(m), y]`
+- `probs` has shape `(m, K)` (one row per sample, one column per class).
+- `np.arange(m)` gives row indices `[0, 1, 2, ..., m-1]`.
+- `y` gives the true class column for each row.
+- Together, it selects `probs[i, y[i]]` for every sample `i`.
+- So `correct_class_probs` is the vector of model probabilities assigned to each sample's true class.
+
 Numerical stability:
 - clip probabilities:
 `probs = clip(probs, eps, 1-eps)`
@@ -176,3 +184,18 @@ Why useful:
 2. Plot loss curve from `cost_history`.
 3. Add L2 regularization on `Theta` (exclude bias row).
 4. Add top confusion pairs report from confusion matrix.
+---
+
+
+## Probability and Interpretation
+- 90-100%: Very confident, likely correct
+- 70-89%: Confident, usually correct
+- 50-69%: Moderate confidence, could be wrong
+- Below 50%: Low confidence, likely wrong
+---
+
+## Accuracy
+Why accuracy matters more:
+- Probability: How confident model is per prediction
+- Accuracy: How often model is actually correct
+- Goal: High accuracy, not just high confidence
