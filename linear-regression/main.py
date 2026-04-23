@@ -90,9 +90,6 @@ theta,cost_history = fit_gradient_descent(
     alpha,
     num_iter
 );  # Add semicolon to suppress output
-# print(f"First cost: {cost_history[0]}")      # Should be high
-# print(f"Last cost: {cost_history[-1]}")      # Should be low
-# print(f"Cost improvement: {cost_history[0] - cost_history[-1]}")
 #
 
 #Evaluation of unseen data
