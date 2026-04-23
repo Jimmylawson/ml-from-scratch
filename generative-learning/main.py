@@ -53,12 +53,13 @@ if __name__ == "__main__":
     sms_data = load_sms_data("data/SMSSpamCollection")
     rng = np.random.default_rng(42)
     indices = list(rng.permutation(len(sms_data)))
+
     split = int(0.8 * len(indices))
     train_indices = indices[:split]
     test_indices = indices[split:]
     train_data = [sms_data[i] for i in train_indices]
     test_data = [sms_data[i] for i in test_indices]
-    print(f"total: {len(sms_data)}")
+    print(f"tota l: {len(sms_data)}")
     print(f"train: {len(train_data)}, test: {len(test_data)}")
     train_spam = sum(y for y, _ in train_data) / len(train_data)
     test_spam = sum(y for y, _ in test_data) / len(test_data)
