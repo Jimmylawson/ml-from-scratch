@@ -2,7 +2,7 @@
 
 import numpy as np
 from typing import List, Tuple
-from model import build_vocabulary, vectorization,prior,laplace_smoothing,predict_one
+from model import build_vocabulary, vectorization,prior,laplace_smoothing,predict_one,score_message
 
 def load_sms_data(file_path: str) -> List[Tuple[int, str]]:
     """
@@ -53,7 +53,7 @@ def load_sms_data(file_path: str) -> List[Tuple[int, str]]:
 
 
 if __name__ == "__main__":
-    sms_data = load_sms_data("data/SMSSpamCollection")
+    sms_data = load_sms_data("../data/SMSSpamCollection")
     rng = np.random.default_rng(42)
     indices = list(rng.permutation(len(sms_data)))
 
@@ -105,6 +105,19 @@ if __name__ == "__main__":
     print("\nTop ham-indicative words:")
     for i in top_ham_idx:
         print(f"{vocab[i]:<15} score={ham_log_ratio[i]:.3f}")
+    #picking one message to compute the spam and ham score
+    msg = test_data[0][1]
+    pred, s_spam, s_ham, idxs, contribs = score_message(
+        msg, vocab, words_to_idx, phi_y, phi_spam, phi_ham
+    )
+
+    print("message:", msg)
+    print(f"spam_score={s_spam:.3f}, ham_score={s_ham:.3f}")
+    print("predicted:", "spam" if pred == 1 else "ham")
+    print("\nTop contributing present words:")
+    for i, c in zip(idxs[:10], contribs[:10]):
+        print(f"{vocab[i]:<15} contribution={c:.3f}")
+
     # print(f"tota l: {len(sms_data)}")
     # print(f"train: {len(train_data)}, test: {len(test_data)}")
     # train_spam = sum(y for y, _ in train_data) / len(train_data)

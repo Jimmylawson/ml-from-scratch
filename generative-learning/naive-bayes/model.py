@@ -22,6 +22,7 @@ def build_vocabulary(train_data):
 
     return vocab, words_to_idx
 #Bernoulli vectorization
+
 def vectorization(vocab, words_to_idx, message):
     vector = np.zeros(len(vocab))
     token = tokenization(message)
@@ -66,5 +67,26 @@ def predict_one(x,phi_y,phi_x_given_spam,phi_x_given_ham):
         x * np.log(phi_x_given_ham) + (1 - x) * np.log(1 - phi_x_given_ham)
     )
     return 1 if spam_score > ham_score else 0
+
+def score_message(msg,vocab, words_to_idx, phi_y, phi_x_given_spam, phi_x_given_ham):
+    x = vectorization(vocab, words_to_idx, msg)
+    spam_score = np.log(phi_y) + np.sum(
+        x * np.log(phi_x_given_spam) + (1 - x) * np.log(1 - phi_x_given_spam)
+    )
+
+    ham_score = np.log(1 - phi_y) + np.sum(
+        x * np.log(phi_x_given_ham) + (1 - x) * np.log(1 - phi_x_given_ham)
+    )
+    present_idx = np.where(x == 1)[0]
+    contrib = np.log(phi_x_given_spam[present_idx]) - np.log(phi_x_given_ham[present_idx])
+
+    #sort biggest spam-push first
+    order = np.argsort(contrib)[:: -1]
+    present_idx = present_idx[order]
+    contrib = contrib[order]
+
+    pred = 1 if spam_score > ham_score else 0
+
+    return pred, spam_score,ham_score, present_idx, contrib
 
 
