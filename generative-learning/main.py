@@ -1,5 +1,8 @@
+
+
 import numpy as np
 from typing import List, Tuple
+from model import build_vocabulary, vectorization,prior,laplace_smoothing,predict_one
 
 def load_sms_data(file_path: str) -> List[Tuple[int, str]]:
     """
@@ -59,14 +62,57 @@ if __name__ == "__main__":
     test_indices = indices[split:]
     train_data = [sms_data[i] for i in train_indices]
     test_data = [sms_data[i] for i in test_indices]
-    print(f"tota l: {len(sms_data)}")
-    print(f"train: {len(train_data)}, test: {len(test_data)}")
-    train_spam = sum(y for y, _ in train_data) / len(train_data)
-    test_spam = sum(y for y, _ in test_data) / len(test_data)
-    print(f"train spam rate: {train_spam:.4f}")
-    print(f"test spam rate: {test_spam:.4f}")
 
-    spam_count  = sum(y for y, _ in sms_data)
-    print(f"spam count {spam_count}")
-    print(f"ham count {len(sms_data) - spam_count}")
-    print(sms_data[:2])
+    #train and test
+    vocab,words_to_idx = build_vocabulary(train_data)
+    X_train = np.array([vectorization(vocab, words_to_idx, msg)  for (y,msg) in train_data])
+    y_train = np.array([y for y, _ in train_data])
+    messages = [msg for _, msg in test_data]
+    X_test = np.array([vectorization(vocab, words_to_idx, msg)  for (y,msg) in test_data])
+    y_test = np.array([y for y, _ in test_data])
+    # print(f"X_train shape: {X_train.shape}")
+    # print(f"Y_train shape: {y_train.shape}")
+    # print(f"X_test shape: {X_test.shape}")
+    # print(f"Y_test shape: {y_test.shape}")
+
+    #predict
+    #Estimate parameters from train
+    phi_y = prior(y_train)
+    phi_spam, phi_ham = laplace_smoothing(X_train, y_train)
+
+    #Predict test tables
+    y_pred = np.array([predict_one(x, phi_y, phi_spam, phi_ham) for x in X_test])
+
+    #evaluate
+    acc = np.mean(y_pred == y_test)
+    print(f"accuracy: {acc:.4f}")
+
+    #computer top indicative words using
+    # print(np.log(phi_spam/ phi_ham)) # (spam-indictive)
+    # print(np.log(phi_ham/ phi_spam)) # (ham-indictive)
+
+    spam_log_ratio = np.log(phi_spam / phi_ham)  # bigger => more spam-like
+    ham_log_ratio = np.log(phi_ham / phi_spam)  # bigger => more ham-like
+
+    # indices of top words
+    top_spam_idx = np.argsort(spam_log_ratio)[-15:][::-1]
+    top_ham_idx = np.argsort(ham_log_ratio)[-15:][::-1]
+
+    print("\nTop spam-indicative words:")
+    for i in top_spam_idx:
+        print(f"{vocab[i]:<15} score={spam_log_ratio[i]:.3f}")
+
+    print("\nTop ham-indicative words:")
+    for i in top_ham_idx:
+        print(f"{vocab[i]:<15} score={ham_log_ratio[i]:.3f}")
+    # print(f"tota l: {len(sms_data)}")
+    # print(f"train: {len(train_data)}, test: {len(test_data)}")
+    # train_spam = sum(y for y, _ in train_data) / len(train_data)
+    # test_spam = sum(y for y, _ in test_data) / len(test_data)
+    # print(f"train spam rate: {train_spam:.4f}")
+    # print(f"test spam rate: {test_spam:.4f}")
+    #
+    # spam_count  = sum(y for y, _ in sms_data)
+    # print(f"spam count {spam_count}")
+    # print(f"ham count {len(sms_data) - spam_count}")
+    # print(sms_data[:2])
