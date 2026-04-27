@@ -1,5 +1,6 @@
 from sklearn.datasets import load_iris
 import numpy as np
+from model import *
 
 # Load the iris dataset
 iris = load_iris()
@@ -29,3 +30,11 @@ X_train = X[:m_train]
 X_test = X[m_train:]
 y_train = y[:m_train]
 y_test = y[m_train:]
+
+priors, classes = class_prior(y_train)
+mus = mean_vector(X_train, y_train, classes)
+sigma = covariance_matrix(X_train, y_train, classes, mus)
+
+y_pred = np.array([predict_one(x, priors,classes, mus,sigma) for x in X_test])
+acc = np.mean(y_pred == y_test)
+print(f"Accuracy: {acc:.4f}")
