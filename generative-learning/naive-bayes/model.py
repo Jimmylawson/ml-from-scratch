@@ -36,7 +36,7 @@ def vectorization(vocab, words_to_idx, message):
 def prior(y_train):
     return np.mean(y_train)
 
-def  class_count(y_train):
+def class_count(y_train):
     n_spam = np.sum(y_train == 1)
     n_ham = np.sum(y_train == 0)
 
