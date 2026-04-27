@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.constants import sigma
+
 
 
 def class_prior(y_train):
