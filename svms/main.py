@@ -10,7 +10,7 @@ X, y = make_blobs(
     random_state=42
 )
 
-rng = np.random.default_rng()
+rng = np.random.default_rng(42)
 indx = rng.permutation(len(X))
 #np.where(condition, value_if_true, value_if_false)
 y_svm= np.where(y == 0, -1 ,1 )
@@ -25,7 +25,16 @@ y_train, y_test = y_svm[:split], y_svm[split:]
 print(f"X shape {X_train.shape}")
 print(f"y shape {y_train.shape}")
 
+w, b, loss_history = fit_svm(X_train, y_train, alpha=0.01, C=1.0, num_iters=1000)
+y_train_pred= predict_class(X_train, w, b)
+y_test_pred  = predict_class(X_test, w, b)
 
-print(y[:5])
-print(y_svm[:5])
+# How many predicted labels matched the real labels?
+train_acc = np.mean(y_train == y_train)
+test_acc = np.mean(y_test == y_test)
 
+
+print(f"First loss: {loss_history[0]:.4f}")
+print(f"Last loss: {loss_history[-1]:.4f}")
+print(f"Train accuracy: {train_acc:.4f}")
+print(f"Test accuracy: {test_acc:.4f}")
