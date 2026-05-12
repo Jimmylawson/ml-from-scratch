@@ -1,8 +1,5 @@
 import numpy as np
 
-
-
-
 def predict(X,theta):
     return X @ theta
 
@@ -46,7 +43,7 @@ def predict_class(X, theta,threshold=0.5):
     prob = pred_prob(X, theta)
     return (prob >= threshold).astype(int)
 
-#accuracy is super import to evaluate your model
+#accuracy is super important to evaluate your model
 def accuracy(X, y, theta):
     preds = predict_class(X, theta)
     return np.mean(preds == y)

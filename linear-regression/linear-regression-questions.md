@@ -1,39 +1,37 @@
 # Linear Regression Quiz Review
 
-This file collects the linear regression questions we reviewed, with corrected explanations and formulas for future revision.
+This file collects the linear regression questions we reviewed, with corrected explanations, clean formulas, examples, and implementation notes.
 
 ---
 
-## 1. What is the linear regression hypothesis?
+## 1. Linear Regression Hypothesis
 
 ### Question
 
-What does this mean?
+What does the linear regression hypothesis mean?
 
-```text
-h_theta(x) = theta^T x
-```
+$$
+h_\theta(x) = \theta^T x
+$$
 
 ### Answer
 
 The hypothesis is the model's prediction function.
 
-```text
-h_theta(x) = theta^T x
-```
+It takes the input features and combines them with the learned parameters.
 
 Expanded:
 
-```text
-h_theta(x) = theta_0*x_0 + theta_1*x_1 + theta_2*x_2 + ... + theta_n*x_n
-```
+$$
+h_\theta(x) = \theta_0x_0 + \theta_1x_1 + \theta_2x_2 + \cdots + \theta_nx_n
+$$
 
 Where:
 
-- `x` is the input feature vector for one training example.
-- `theta` is the parameter/weight vector the model learns.
-- `theta^T x` is the dot product between the parameters and features.
-- `h_theta(x)` is the predicted output.
+- \(x\) is the input feature vector.
+- \(\theta\) is the parameter vector the model learns.
+- \(\theta^T x\) is the dot product between parameters and features.
+- \(h_\theta(x)\) is the predicted value.
 
 ### Example
 
@@ -46,63 +44,65 @@ theta = [50, 0.1, 10]
 
 Then:
 
-```text
-h_theta(x) = 50*1 + 0.1*2104 + 10*5
-           = 50 + 210.4 + 50
-           = 310.4
-```
+$$
+h_\theta(x) = 50(1) + 0.1(2104) + 10(5)
+$$
+
+$$
+h_\theta(x) = 50 + 210.4 + 50 = 310.4
+$$
 
 So the model predicts `310.4`.
 
 ---
 
-## 2. Why do we add the bias/intercept term?
+## 2. Bias / Intercept Term
 
 ### Question
 
-Why do we add `x_0 = 1`?
+Why do we add \(x_0 = 1\)?
 
 ### Answer
 
-We add `x_0 = 1` so the model can learn an intercept/bias term.
+We add \(x_0 = 1\) so the model can learn an intercept term.
 
-Without the bias term:
+Without bias:
 
-```text
-h_theta(x) = theta_1*x_1
-```
+$$
+h_\theta(x) = \theta_1x_1
+$$
 
-The line must pass through the origin `(0, 0)`.
+The line must pass through the origin \((0,0)\).
 
-With the bias term:
+With bias:
 
-```text
-h_theta(x) = theta_0 + theta_1*x_1
-```
+$$
+h_\theta(x) = \theta_0 + \theta_1x_1
+$$
 
 The line can shift up or down.
 
-### Meaning of "line passing through the origin"
+### Meaning of Passing Through the Origin
 
-A line passes through the origin if it goes through point `(0, 0)`.
+A line passes through the origin if it goes through \((0,0)\).
 
 Example:
 
-```text
+$$
 y = 3x
-```
+$$
 
-When `x = 0`, `y = 0`, so it passes through the origin.
+When \(x=0\), \(y=0\).
 
 But:
 
-```text
+$$
 y = 3x + 5
-```
+$$
 
-When `x = 0`, `y = 5`, so it does not pass through the origin.
+When \(x=0\), \(y=5\). So it does not pass through the origin.
 
-### Why this matters
+### Why This Matters
 
 Most real datasets do not naturally have output `0` when all features are `0`.
 
@@ -110,15 +110,15 @@ The bias term gives the model flexibility.
 
 ---
 
-## 3. Why do we square the error in linear regression?
+## 3. Squared Error
 
 ### Question
 
-Why does the cost function use squared error?
+Why does linear regression square the error?
 
-```text
-(h_theta(x_i) - y_i)^2
-```
+$$
+(h_\theta(x^{(i)}) - y^{(i)})^2
+$$
 
 ### Answer
 
@@ -126,19 +126,15 @@ We square the error for two main reasons.
 
 First, it prevents positive and negative errors from cancelling out.
 
-Example:
-
 ```text
 error 1 =  5
 error 2 = -5
-sum = 0
+sum     =  0
 ```
 
-Without squaring, the model may look perfect even though it made mistakes.
+Without squaring, the model could look perfect even though it made mistakes.
 
 Second, squaring penalizes large errors more strongly.
-
-Example:
 
 ```text
 error = 2  -> squared error = 4
@@ -147,700 +143,396 @@ error = 10 -> squared error = 100
 
 So large mistakes become much more costly.
 
-### Cost function
-
-```text
-J(theta) = (1 / 2m) * sum_i=1^m (h_theta(x_i) - y_i)^2
-```
-
-Meaning:
-
-- `m` is the number of training examples.
-- `h_theta(x_i)` is the prediction for example `i`.
-- `y_i` is the true target for example `i`.
-- The cost measures average squared prediction error.
-
 ---
 
-## 4. Why do we use `1 / 2m` in the cost function?
+## 4. Cost Function
 
 ### Question
 
-Why is the cost function:
-
-```text
-J(theta) = (1 / 2m) * sum_i=1^m (h_theta(x_i) - y_i)^2
-```
-
-instead of:
-
-```text
-J(theta) = (1 / m) * sum_i=1^m (h_theta(x_i) - y_i)^2
-```
+What is the linear regression cost function?
 
 ### Answer
 
-The `1 / m` averages the error over all training examples.
+Andrew Ng's linear regression cost is:
 
-The `1 / 2` is mainly for calculus convenience.
-
-When we take the derivative of a square:
-
-```text
-d/dz z^2 = 2z
-```
-
-The `1/2` cancels that `2`.
-
-So:
-
-```text
-(1 / 2m) * 2 = 1 / m
-```
-
-This makes the gradient cleaner.
-
-### Key point
-
-The `1/2` does not change where the minimum is.
-
-It only makes the derivative simpler.
-
----
-
-## 5. What does this gradient term mean?
-
-### Question
-
-What does this term mean?
-
-```text
-(h_theta(x_i) - y_i) * x_j_i
-```
-
-### Answer
-
-It means:
-
-- `h_theta(x_i) - y_i` is the prediction error for training example `i`.
-- `x_j_i` is feature `j` for that same training example.
-- Multiplying them tells gradient descent how much feature `j` contributed to the error.
-
-### Formula
-
-```text
-(h_theta(x^(i)) - y^(i)) * x_j^(i)
-```
-
-If the feature value is large, that example has a stronger effect on updating `theta_j`.
-
-### Intuition
-
-Gradient descent asks:
-
-```text
-How should theta_j change to reduce the prediction error?
-```
-
-This term is part of that answer.
-
----
-
-## 6. What is batch gradient descent?
-
-### Question
-
-What is the batch gradient descent update for linear regression?
-
-### Answer
-
-Batch gradient descent uses all training examples to compute one update.
-
-For each parameter `theta_j`:
-
-```text
-theta_j := theta_j - alpha * (1/m) * sum_i=1^m (h_theta(x_i) - y_i) * x_j_i
-```
+$$
+J(\theta) = \frac{1}{2m}\sum_{i=1}^{m}\left(h_\theta(x^{(i)}) - y^{(i)}\right)^2
+$$
 
 Where:
 
-- `alpha` is the learning rate.
-- `m` is the number of training examples.
-- The summation uses every training example before updating.
+- \(m\) is the number of training examples.
+- \(h_\theta(x^{(i)})\) is the prediction for example \(i\).
+- \(y^{(i)}\) is the true target for example \(i\).
+- The cost measures average squared prediction error.
 
-### Why it is called "batch"
+### Why \(1 / 2m\)?
 
-It is called batch gradient descent because each update uses the full batch of training data.
+The \(1/m\) averages over the training set.
 
-Comparison:
+The \(1/2\) is mainly for calculus convenience.
 
-- Batch gradient descent: use all examples, then update.
-- Stochastic gradient descent: use one example, then update.
-- Mini-batch gradient descent: use a small group of examples, then update.
+Because:
 
----
+$$
+\frac{d}{dz}z^2 = 2z
+$$
 
-## 7. Why does gradient descent subtract the gradient?
+The \(1/2\) cancels the `2` when differentiating.
 
-### Question
+$$
+\frac{1}{2m} \cdot 2 = \frac{1}{m}
+$$
 
-Why is the update:
-
-```text
-theta_j := theta_j - alpha * dJ/dtheta_j
-```
-
-instead of adding?
-
-### Answer
-
-The gradient points in the direction where the cost increases fastest.
-
-So:
-
-```text
-+ gradient
-```
-
-moves uphill and increases cost.
-
-But:
-
-```text
-- gradient
-```
-
-moves downhill and decreases cost.
-
-### Important correction
-
-Gradient descent is not mainly trying to make the parameter values small.
-
-It is trying to make the cost function small.
-
-The parameter may increase or decrease depending on which direction lowers the cost.
-
-### Example
-
-If:
-
-```text
-theta = 2
-gradient = positive
-```
-
-Then:
-
-```text
-theta := 2 - alpha * positive
-```
-
-`theta` decreases.
-
-If:
-
-```text
-theta = 2
-gradient = negative
-```
-
-Then:
-
-```text
-theta := 2 - alpha * negative
-```
-
-`theta` increases.
-
-The goal is always to move toward lower cost.
+The \(1/2\) does not change where the minimum is. It only makes the gradient cleaner.
 
 ---
 
-## 8. What does the learning rate do?
+## 5. Gradient Descent Update
 
 ### Question
 
-What is the purpose of `alpha` in gradient descent?
+What is batch gradient descent for linear regression?
 
 ### Answer
 
-The learning rate controls how big each gradient descent step is.
+Gradient descent updates each parameter by moving opposite the gradient.
 
-```text
-theta_j := theta_j - alpha * dJ/dtheta_j
-```
+For parameter \(\theta_j\):
 
-If `alpha` is too small:
+$$
+\theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j}J(\theta)
+$$
 
-- Gradient descent moves slowly.
-- Training may take many iterations.
+For linear regression, the gradient is:
 
-If `alpha` is too large:
+$$
+\frac{\partial}{\partial \theta_j}J(\theta)
+= \frac{1}{m}\sum_{i=1}^{m}\left(h_\theta(x^{(i)}) - y^{(i)}\right)x_j^{(i)}
+$$
 
-- Gradient descent may overshoot the minimum.
-- Cost may oscillate or diverge.
+So the update becomes:
 
-### Intuition
+$$
+\theta_j := \theta_j - \alpha \frac{1}{m}\sum_{i=1}^{m}\left(h_\theta(x^{(i)}) - y^{(i)}\right)x_j^{(i)}
+$$
 
-The gradient gives direction.
+### Meaning of the Gradient Term
 
-The learning rate controls step size.
+$$
+\left(h_\theta(x^{(i)}) - y^{(i)}\right)x_j^{(i)}
+$$
+
+This says:
+
+- \(h_\theta(x^{(i)}) - y^{(i)}\) is the prediction error.
+- \(x_j^{(i)}\) tells how much feature \(j\) contributed.
+- Multiplying them tells how feature \(j\) should influence the parameter update.
+
+If the model is overpredicting and feature \(j\) is large, the gradient pushes \(\theta_j\) downward.
 
 ---
 
-## 9. Why does feature scaling help gradient descent?
+## 6. Learning Rate
 
 ### Question
 
-Why do we standardize features using mean and standard deviation?
+What does the learning rate \(\alpha\) do?
 
 ### Answer
 
-Feature scaling helps gradient descent converge faster.
+The learning rate controls the step size of gradient descent.
+
+Update rule:
+
+$$
+\theta := \theta - \alpha \nabla_\theta J(\theta)
+$$
+
+If \(\alpha\) is too small:
+
+```text
+Gradient descent is slow.
+```
+
+If \(\alpha\) is too large:
+
+```text
+Gradient descent may overshoot the minimum or diverge.
+```
+
+Good learning rate:
+
+```text
+Cost decreases steadily over iterations.
+```
+
+---
+
+## 7. Convergence and Divergence
+
+### Question
+
+What do convergence and divergence mean?
+
+### Answer
+
+Convergence means the optimization is moving toward a stable minimum.
+
+In practice:
+
+```text
+cost goes down and eventually flattens
+```
+
+Divergence means the optimization is moving away from the minimum.
+
+In practice:
+
+```text
+cost increases, explodes, or becomes NaN
+```
+
+### Why This Matters
+
+Your convergence plot should show cost decreasing over time.
+
+A good curve looks like:
+
+```text
+high cost -> lower cost -> flat
+```
+
+---
+
+## 8. Feature Scaling
+
+### Question
+
+Why does feature scaling help gradient descent?
+
+### Answer
+
+Feature scaling makes features live on similar ranges.
 
 Standardization:
 
-```text
-x_j := (x_j - mu_j) / sigma_j
-```
+$$
+x_j := \frac{x_j - \mu_j}{\sigma_j}
+$$
 
 Where:
 
-- `mu_j` is the mean of feature `j`.
-- `sigma_j` is the standard deviation of feature `j`.
+- \(\mu_j\) is the mean of feature \(j\).
+- \(\sigma_j\) is the standard deviation of feature \(j\).
 
-### Why it helps
+This helps because large-scale features will not dominate small-scale features.
 
-If one feature has very large values and another has small values, the cost surface can become stretched.
+Gradient descent usually converges faster when features are scaled.
+
+### Important Case
+
+If \(\sigma_j = 0\), that feature has the same value for every example.
+
+In code, avoid division by zero:
+
+```python
+sigma[sigma == 0] = 1
+```
+
+---
+
+## 9. Normal Equation
+
+### Question
+
+What is the normal equation?
+
+### Answer
+
+The normal equation solves linear regression directly without gradient descent.
+
+$$
+\theta = (X^TX)^{-1}X^Ty
+$$
+
+Because matrix inverse can fail or be unstable, a better NumPy version is:
+
+$$
+\theta = \text{pinv}(X^TX)X^Ty
+$$
+
+In code:
+
+```python
+theta = np.linalg.pinv(X.T @ X) @ X.T @ y
+```
+
+### Why Not Always Use It?
+
+Computing the inverse is expensive for many features.
+
+Roughly:
+
+$$
+O(n^3)
+$$
+
+where \(n\) is the number of features.
+
+So:
+
+- Normal equation is fine for smaller feature sets.
+- Gradient descent is better for large datasets or many features.
+
+---
+
+## 10. MSE and RMSE
+
+### Question
+
+Why do we compute MSE and RMSE?
+
+### Answer
+
+MSE reports average squared prediction error.
+
+$$
+\text{MSE} = \frac{1}{m}\sum_{i=1}^{m}(\hat{y}^{(i)} - y^{(i)})^2
+$$
+
+RMSE is the square root of MSE.
+
+$$
+\text{RMSE} = \sqrt{\text{MSE}}
+$$
+
+MSE is useful for optimization and comparison.
+
+RMSE is easier to interpret because it is in the same unit as the target.
 
 Example:
 
 ```text
-house_size = 2000
-bedrooms = 3
+MSE = 0.53
+RMSE = 0.73
 ```
 
-Without scaling, the large feature can dominate the gradient update.
-
-With scaling, features are on similar scales, so gradient descent moves more directly toward the minimum.
-
-### Important rule
-
-Compute `mu` and `sigma` from the training set only.
-
-Then use those same values to transform both train and test sets.
-
-This prevents test-set leakage.
+This means the typical prediction error is roughly `0.73` target units.
 
 ---
 
-## 10. What is the normal equation?
+## 11. R Squared
 
 ### Question
 
-What is the normal equation in linear regression?
+What does \(R^2\) mean?
 
 ### Answer
 
-The normal equation is a closed-form solution for the best `theta`.
+\(R^2\) compares your model against a simple baseline model that always predicts the mean of \(y\).
 
-```text
-theta = (X^T X)^(-1) X^T y
-```
+$$
+R^2 = 1 - \frac{\text{SSE}}{\text{SST}}
+$$
 
-It finds the minimum directly instead of using many gradient descent steps.
+Where:
 
-### Meaning
+$$
+\text{SSE} = \sum_{i=1}^{m}(y^{(i)} - \hat{y}^{(i)})^2
+$$
 
-It comes from taking the derivative of the cost function and setting it equal to zero:
+$$
+\text{SST} = \sum_{i=1}^{m}(y^{(i)} - \bar{y})^2
+$$
 
-```text
-gradient = 0
-```
+Interpretation:
 
-At the minimum, the slope of the cost function is zero.
+- \(R^2 = 1\): perfect predictions.
+- \(R^2 = 0\): same as predicting the mean baseline.
+- \(R^2 < 0\): worse than the mean baseline.
+- \(R^2 \approx 0.60\): model explains about 60% of the target variance.
 
-### Comparison with gradient descent
+### Important Correction
 
-Gradient descent:
+\(R^2 = 0.60\) does not mean exactly 40% is noise.
 
-- Iterative.
-- Needs learning rate.
-- Benefits from feature scaling.
-- Better for large feature sets.
-
-Normal equation:
-
-- Direct one-step solution.
-- No learning rate.
-- No iterations.
-- Feature scaling is not required.
-- Can be expensive when there are many features.
+It means 40% of the variance is not explained by this model. That can be noise, missing features, nonlinear structure, or model limitations.
 
 ---
 
-## 11. Why can the normal equation be expensive?
+## 12. Train vs Test Error
 
 ### Question
 
-Why might the normal equation be slow for large datasets?
+Why compare train and test metrics?
 
 ### Answer
 
-The expensive part is computing the inverse of:
+Training metrics show how well the model fits data it learned from.
+
+Test metrics show how well the model generalizes to unseen data.
+
+Patterns:
 
 ```text
-X^T X
+low train error, low test error   -> good fit
+low train error, high test error  -> overfitting
+high train error, high test error -> underfitting
 ```
-
-If there are `n` features, then `X^T X` is an `n x n` matrix.
-
-Matrix inversion costs roughly:
-
-```text
-O(n^3)
-```
-
-So if the number of features is very large, the normal equation becomes expensive.
-
-### Important distinction
-
-The main issue is the number of features, not only the number of training examples.
-
-Large `n` makes matrix inversion expensive.
-
----
-
-## 12. What if `X^T X` is not invertible?
-
-### Question
-
-What does it mean if `X^T X` is not invertible, and what can cause it?
-
-### Answer
-
-If `X^T X` is not invertible, it means the matrix has no inverse.
-
-Then this formula cannot be used directly:
-
-```text
-theta = (X^T X)^(-1) X^T y
-```
-
-Common causes:
-
-- Redundant features.
-- One feature is a linear combination of another.
-- More features than training examples.
-
-### Example of redundant features
-
-If:
-
-```text
-x_2 = 2 * x_1
-```
-
-then `x_2` does not add new information. It is dependent on `x_1`.
-
-### Fixes
-
-Remove redundant features, or use the pseudo-inverse:
-
-```python
-theta = np.linalg.pinv(X) @ y
-```
-
-Later, regularization can also help:
-
-```text
-theta = (X^T X + lambda I)^(-1) X^T y
-```
-
----
-
-## 13. Why do we compare train error and test error?
-
-### Question
-
-Why do we compare training error and test error?
-
-### Answer
-
-Training error tells us how well the model fits the data it learned from.
-
-Test error tells us how well the model generalizes to unseen data.
-
-### Good fit
-
-```text
-train error: low
-test error:  low and close to train error
-```
-
-This means the model learned a pattern that generalizes.
 
 ### Overfitting
 
-```text
-train error: low
-test error:  much higher
-```
-
-This means the model learned the training data too specifically, including noise or accidental patterns.
+The model captures training data too specifically and does not generalize well.
 
 ### Underfitting
 
-```text
-train error: high
-test error:  high
-```
-
-This means the model is too simple or not trained well enough to capture the real pattern.
-
-### Examples
-
-Likely overfitting:
-
-```text
-Train RMSE: 0.20
-Test RMSE:  1.50
-```
-
-Likely underfitting:
-
-```text
-Train RMSE: 2.00
-Test RMSE:  2.10
-```
-
-Good generalization:
-
-```text
-Train RMSE: 0.72
-Test RMSE:  0.73
-```
+The model is too simple or poorly trained and does not capture the pattern.
 
 ---
 
-## 14. What is MSE?
+## 13. GD vs Normal Equation Comparison
 
 ### Question
 
-What does MSE measure?
+Why compare gradient descent parameters to normal equation parameters?
 
 ### Answer
 
-MSE means Mean Squared Error.
+The normal equation gives the direct optimum for linear regression.
 
-```text
-MSE = (1/m) * sum_i=1^m (y_hat_i - y_i)^2
-```
+Gradient descent should move close to that optimum if it converges well.
 
-Where:
+A useful comparison is:
 
-- `y_hat_i` is the prediction.
-- `y_i` is the true target.
-- The error is squared.
-- The average is taken across all examples.
+$$
+\lVert \theta_{GD} - \theta_{NE} \rVert_2
+$$
 
-### Meaning
+Expanded:
 
-MSE reports how wrong the model is on average using squared errors.
+$$
+\lVert \theta_{GD} - \theta_{NE} \rVert_2
+= \sqrt{\sum_{j=0}^{n}(\theta_{GD,j} - \theta_{NE,j})^2}
+$$
 
-Because the errors are squared, large mistakes are penalized heavily.
-
-### Important
-
-MSE is usually used as an evaluation metric.
-
-In Andrew Ng's linear regression derivation, the optimization cost often uses:
-
-```text
-J(theta) = (1 / 2m) * sum_i=1^m (h_theta(x_i) - y_i)^2
-```
-
-That is closely related to MSE, but with an extra `1/2` for derivative convenience.
+If this value becomes small as iterations increase, gradient descent is approaching the normal-equation solution.
 
 ---
 
-## 15. What is RMSE?
-
-### Question
-
-What is RMSE, and how is it different from MSE?
-
-### Answer
-
-RMSE means Root Mean Squared Error.
-
-```text
-RMSE = sqrt(MSE)
-```
-
-If:
-
-```text
-MSE = 0.531378
-```
-
-Then:
-
-```text
-RMSE = sqrt(0.531378) = 0.728957
-```
-
-### Why RMSE is useful
-
-MSE is in squared target units.
-
-RMSE is back in the original target units.
-
-So RMSE is easier to interpret as a typical prediction error.
-
-### Correction
-
-RMSE is not the square of MSE.
-
-RMSE is the square root of MSE.
-
----
-
-## 16. What is R-squared?
-
-### Question
-
-What does `R^2` measure?
-
-### Answer
-
-`R^2` compares the model's error to a simple baseline.
-
-The baseline predicts the average target value for every example.
-
-Formula:
-
-```text
-R^2 = 1 - (SSE / SST)
-```
-
-Where:
-
-```text
-SSE = sum_i=1^m (y_i - y_hat_i)^2
-```
-
-SSE is the model's squared error.
-
-```text
-SST = sum_i=1^m (y_i - y_bar)^2
-```
-
-SST is the baseline squared error.
-
-### Interpretation
-
-```text
-R^2 = 1
-```
-
-Perfect prediction.
-
-```text
-R^2 = 0
-```
-
-Same performance as predicting the mean every time.
-
-```text
-R^2 < 0
-```
-
-Worse than predicting the mean.
-
-```text
-R^2 = 0.60
-```
-
-The model explains about 60% of the target variance.
-
-The remaining 40% is unexplained by the model. It may come from noise, missing features, nonlinear structure, or limits in the data.
-
-### Important correction
-
-`R^2 = 0.60` does not mean the model is the same as the baseline.
-
-`R^2 = 0` means the model is the same as the baseline.
-
----
-
-## 17. Gradient descent vs normal equation
-
-### Question
-
-What is the difference between gradient descent and the normal equation?
-
-### Answer
-
-Gradient descent is an iterative optimization method.
-
-It starts with an initial `theta`, computes gradients, and updates many times:
-
-```text
-theta := theta - alpha * gradient
-```
-
-The normal equation solves for `theta` directly:
-
-```text
-theta = (X^T X)^(-1) X^T y
-```
-
-### Gradient descent
-
-Use when:
-
-- The dataset has many features.
-- Matrix inversion is too expensive.
-- You want an iterative optimization method.
-
-Needs:
-
-- Learning rate.
-- Number of iterations.
-- Often benefits from feature scaling.
-
-### Normal equation
-
-Use when:
-
-- The number of features is not too large.
-- You want a direct solution.
-
-Does not need:
-
-- Learning rate.
-- Iterations.
-- Feature scaling.
-
----
-
-## 18. Final linear regression checklist
+## 14. Final Linear Regression Checklist
 
 You should be able to explain:
 
-- What `x`, `theta`, and `h_theta(x)` mean.
-- Why we add `x_0 = 1`.
+- What \(h_\theta(x)=\theta^Tx\) means.
+- Why we add \(x_0=1\).
 - Why squared error is used.
-- Why the cost has `1 / 2m`.
-- How batch gradient descent updates parameters.
-- Why gradient descent subtracts the gradient.
-- What the learning rate controls.
-- Why feature scaling helps convergence.
+- Why the cost uses \(1/(2m)\).
+- How gradient descent updates \(\theta\).
+- What the learning rate does.
+- What convergence and divergence mean.
+- Why feature scaling helps.
 - What the normal equation does.
-- Why the normal equation can be expensive.
-- What to do if `X^T X` is not invertible.
-- Why train/test comparison matters.
-- Difference between MSE and RMSE.
-- How to interpret `R^2`.
-
+- Why normal equation can be expensive.
+- How MSE, RMSE, and \(R^2\) evaluate performance.
+- How train/test metrics reveal overfitting and underfitting.
